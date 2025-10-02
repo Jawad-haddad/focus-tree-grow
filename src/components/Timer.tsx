@@ -1,9 +1,12 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Play, Pause, RotateCcw } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Play, Pause, RotateCcw, Plus } from "lucide-react";
 import { TreeGrowth } from "./TreeGrowth";
+import { MotivationalQuote } from "./MotivationalQuote";
 import { toast } from "sonner";
+import { playCompletionSound, playTickSound } from "@/utils/sounds";
 
 interface TimerProps {
   onSessionComplete: (duration: number) => void;
@@ -16,6 +19,8 @@ export const Timer = ({ onSessionComplete }: TimerProps) => {
   const [timeLeft, setTimeLeft] = useState<number>(selectedTime * 60);
   const [isRunning, setIsRunning] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [customTime, setCustomTime] = useState<string>("");
+  const [showCustomInput, setShowCustomInput] = useState(false);
 
   useEffect(() => {
     setTimeLeft(selectedTime * 60);
@@ -31,9 +36,15 @@ export const Timer = ({ onSessionComplete }: TimerProps) => {
           const newTime = prev - 1;
           setProgress(((selectedTime * 60 - newTime) / (selectedTime * 60)) * 100);
           
+          // Play tick sound for last 10 seconds
+          if (newTime <= 10 && newTime > 0) {
+            playTickSound();
+          }
+          
           if (newTime === 0) {
             setIsRunning(false);
             onSessionComplete(selectedTime);
+            playCompletionSound();
             toast.success("🌳 Session complete! Your tree has fully grown!");
           }
           
@@ -66,6 +77,18 @@ export const Timer = ({ onSessionComplete }: TimerProps) => {
     toast("🔄 Timer reset");
   };
 
+  const handleCustomTime = () => {
+    const time = parseInt(customTime);
+    if (time && time > 0 && time <= 180) {
+      setSelectedTime(time);
+      setShowCustomInput(false);
+      setCustomTime("");
+      toast.success(`⏱️ Custom timer set for ${time} minutes`);
+    } else {
+      toast.error("Please enter a valid time between 1-180 minutes");
+    }
+  };
+
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -76,6 +99,9 @@ export const Timer = ({ onSessionComplete }: TimerProps) => {
     <div className="w-full max-w-2xl mx-auto space-y-8">
       <Card className="p-8 bg-card shadow-[var(--shadow-soft)] border-border">
         <div className="space-y-8">
+          {/* Motivational Quote */}
+          <MotivationalQuote />
+
           {/* Time Selection */}
           <div className="space-y-4">
             <h2 className="text-lg font-medium text-foreground text-center">Select Focus Duration</h2>
@@ -95,7 +121,35 @@ export const Timer = ({ onSessionComplete }: TimerProps) => {
                   {time} min
                 </Button>
               ))}
+              <Button
+                variant="outline"
+                onClick={() => setShowCustomInput(!showCustomInput)}
+                disabled={isRunning}
+                className="min-w-[80px]"
+              >
+                <Plus className="h-4 w-4 mr-1" />
+                Custom
+              </Button>
             </div>
+            
+            {/* Custom Time Input */}
+            {showCustomInput && (
+              <div className="flex gap-2 justify-center items-center animate-fade-in">
+                <Input
+                  type="number"
+                  placeholder="Minutes (1-180)"
+                  value={customTime}
+                  onChange={(e) => setCustomTime(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleCustomTime()}
+                  className="max-w-[150px]"
+                  min="1"
+                  max="180"
+                />
+                <Button onClick={handleCustomTime} size="sm">
+                  Set
+                </Button>
+              </div>
+            )}
           </div>
 
           {/* Tree Animation */}

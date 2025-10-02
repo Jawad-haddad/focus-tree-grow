@@ -1,6 +1,8 @@
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Clock, Calendar } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Clock, Calendar, Trash2 } from "lucide-react";
+import { toast } from "sonner";
 
 interface Session {
   id: string;
@@ -10,9 +12,14 @@ interface Session {
 
 interface SessionHistoryProps {
   sessions: Session[];
+  onDeleteSession: (id: string) => void;
 }
 
-export const SessionHistory = ({ sessions }: SessionHistoryProps) => {
+export const SessionHistory = ({ sessions, onDeleteSession }: SessionHistoryProps) => {
+  const handleDelete = (id: string, duration: number) => {
+    onDeleteSession(id);
+    toast.success(`Deleted ${duration} minute session`);
+  };
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat("en-US", {
       month: "short",
@@ -57,7 +64,7 @@ export const SessionHistory = ({ sessions }: SessionHistoryProps) => {
               {sessions.map((session) => (
                 <div
                   key={session.id}
-                  className="flex items-center justify-between p-4 bg-muted/30 rounded-lg border border-border hover:border-primary/50 transition-colors"
+                  className="flex items-center justify-between p-4 bg-muted/30 rounded-lg border border-border hover:border-primary/50 transition-colors group"
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
@@ -68,7 +75,17 @@ export const SessionHistory = ({ sessions }: SessionHistoryProps) => {
                       <div className="text-sm text-muted-foreground">{formatDate(session.completedAt)}</div>
                     </div>
                   </div>
-                  <div className="text-2xl">🌳</div>
+                  <div className="flex items-center gap-2">
+                    <div className="text-2xl">🌳</div>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleDelete(session.id, session.duration)}
+                      className="opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8"
+                    >
+                      <Trash2 className="h-4 w-4 text-destructive" />
+                    </Button>
+                  </div>
                 </div>
               ))}
             </div>

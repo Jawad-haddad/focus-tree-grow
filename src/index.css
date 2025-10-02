@@ -8,6 +8,45 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
+    --background: 140 30% 97%;
+    --foreground: 140 20% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 140 20% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 140 20% 10%;
+    --primary: 142 71% 45%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 140 20% 90%;
+    --secondary-foreground: 140 20% 10%;
+    --muted: 140 20% 95%;
+    --muted-foreground: 140 10% 40%;
+    --accent: 88 50% 53%;
+    --accent-foreground: 140 20% 10%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 140 20% 85%;
+    --input: 140 20% 85%;
+    --ring: 142 71% 45%;
+    --radius: 0.5rem;
+    --chart-1: 142 71% 45%;
+    --chart-2: 88 50% 53%;
+    --chart-3: 35 91% 65%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+    
+    /* Nature theme colors */
+    --earth: 30 40% 50%;
+    --trunk: 25 50% 35%;
+    --leaf: 142 71% 45%;
+    --seed: 30 50% 40%;
+    --sky: 200 80% 90%;
+    
+    /* Shadows */
+    --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.08);
+    --shadow-tree: 0 8px 30px rgba(74, 175, 99, 0.3);
+  }
+
+  .dark {
     --background: 45 20% 96%;
     --foreground: 30 15% 25%;
 
