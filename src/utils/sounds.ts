@@ -39,3 +39,78 @@ export const playTickSound = () => {
   oscillator.start();
   oscillator.stop(audioContext.currentTime + 0.1);
 };
+
+export const playBreakSound = () => {
+  const audioContext = new AudioContext();
+  const oscillator = audioContext.createOscillator();
+  const gainNode = audioContext.createGain();
+  
+  oscillator.connect(gainNode);
+  gainNode.connect(audioContext.destination);
+  
+  oscillator.frequency.value = 400;
+  oscillator.type = "sine";
+  
+  gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+  gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+  
+  oscillator.start();
+  oscillator.stop(audioContext.currentTime + 0.3);
+};
+
+// Ambient sounds
+let ambientOscillator: OscillatorNode | null = null;
+let ambientGain: GainNode | null = null;
+let audioContext: AudioContext | null = null;
+
+export const startAmbientSound = (type: 'rain' | 'forest' | 'ocean') => {
+  stopAmbientSound();
+  
+  audioContext = new AudioContext();
+  ambientGain = audioContext.createGain();
+  ambientGain.connect(audioContext.destination);
+  ambientGain.gain.value = 0.05;
+
+  // Simple ambient noise simulation
+  if (type === 'rain') {
+    const bufferSize = 4096;
+    const whiteNoise = audioContext.createScriptProcessor(bufferSize, 1, 1);
+    whiteNoise.onaudioprocess = (e) => {
+      const output = e.outputBuffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        output[i] = Math.random() * 2 - 1;
+      }
+    };
+    whiteNoise.connect(ambientGain);
+  } else if (type === 'forest' || type === 'ocean') {
+    ambientOscillator = audioContext.createOscillator();
+    ambientOscillator.type = 'sine';
+    ambientOscillator.frequency.value = type === 'forest' ? 200 : 100;
+    ambientOscillator.connect(ambientGain);
+    ambientOscillator.start();
+    
+    // Modulation for natural sound
+    const lfo = audioContext.createOscillator();
+    const lfoGain = audioContext.createGain();
+    lfo.frequency.value = 0.5;
+    lfoGain.gain.value = 50;
+    lfo.connect(lfoGain);
+    lfoGain.connect(ambientOscillator.frequency);
+    lfo.start();
+  }
+};
+
+export const stopAmbientSound = () => {
+  if (ambientOscillator) {
+    ambientOscillator.stop();
+    ambientOscillator = null;
+  }
+  if (ambientGain) {
+    ambientGain.disconnect();
+    ambientGain = null;
+  }
+  if (audioContext) {
+    audioContext.close();
+    audioContext = null;
+  }
+};

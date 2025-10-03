@@ -2,17 +2,19 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Play, Pause, RotateCcw, Plus } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Play, Pause, RotateCcw, Plus, Coffee, Volume2, VolumeX, Palette } from "lucide-react";
 import { TreeGrowth } from "./TreeGrowth";
 import { MotivationalQuote } from "./MotivationalQuote";
 import { toast } from "sonner";
-import { playCompletionSound, playTickSound } from "@/utils/sounds";
+import { playCompletionSound, playTickSound, playBreakSound, startAmbientSound, stopAmbientSound } from "@/utils/sounds";
 
 interface TimerProps {
   onSessionComplete: (duration: number) => void;
 }
 
 const TIME_OPTIONS = [5, 10, 15, 20, 25] as const;
+const BREAK_OPTIONS = [5, 10, 15] as const;
 
 export const Timer = ({ onSessionComplete }: TimerProps) => {
   const [selectedTime, setSelectedTime] = useState<number>(25);
@@ -21,11 +23,23 @@ export const Timer = ({ onSessionComplete }: TimerProps) => {
   const [progress, setProgress] = useState(0);
   const [customTime, setCustomTime] = useState<string>("");
   const [showCustomInput, setShowCustomInput] = useState(false);
+  const [isBreakMode, setIsBreakMode] = useState(false);
+  const [ambientSound, setAmbientSound] = useState<'none' | 'rain' | 'forest' | 'ocean'>('none');
+  const [treeTheme, setTreeTheme] = useState<'default' | 'autumn' | 'spring' | 'winter'>('default');
 
   useEffect(() => {
     setTimeLeft(selectedTime * 60);
     setProgress(0);
   }, [selectedTime]);
+
+  useEffect(() => {
+    if (ambientSound !== 'none' && isRunning) {
+      startAmbientSound(ambientSound);
+    } else {
+      stopAmbientSound();
+    }
+    return () => stopAmbientSound();
+  }, [ambientSound, isRunning]);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -43,9 +57,15 @@ export const Timer = ({ onSessionComplete }: TimerProps) => {
           
           if (newTime === 0) {
             setIsRunning(false);
-            onSessionComplete(selectedTime);
-            playCompletionSound();
-            toast.success("🌳 Session complete! Your tree has fully grown!");
+            if (!isBreakMode) {
+              onSessionComplete(selectedTime);
+              playCompletionSound();
+              toast.success("🌳 Session complete! Your tree has fully grown!");
+            } else {
+              playBreakSound();
+              toast.success("☕ Break complete! Ready for another session?");
+              setIsBreakMode(false);
+            }
           }
           
           return newTime;
@@ -74,7 +94,17 @@ export const Timer = ({ onSessionComplete }: TimerProps) => {
     setIsRunning(false);
     setTimeLeft(selectedTime * 60);
     setProgress(0);
+    setIsBreakMode(false);
     toast("🔄 Timer reset");
+  };
+
+  const handleStartBreak = (duration: number) => {
+    setIsBreakMode(true);
+    setSelectedTime(duration);
+    setTimeLeft(duration * 60);
+    setProgress(0);
+    setIsRunning(true);
+    toast.info(`☕ Break started for ${duration} minutes`);
   };
 
   const handleCustomTime = () => {
@@ -99,12 +129,47 @@ export const Timer = ({ onSessionComplete }: TimerProps) => {
     <div className="w-full max-w-2xl mx-auto space-y-8">
       <Card className="p-8 bg-card shadow-[var(--shadow-soft)] border-border">
         <div className="space-y-8">
+          {/* Settings Bar */}
+          <div className="flex gap-4 justify-center flex-wrap items-center">
+            <Select value={ambientSound} onValueChange={(v: any) => setAmbientSound(v)}>
+              <SelectTrigger className="w-[160px]">
+                <div className="flex items-center gap-2">
+                  {ambientSound === 'none' ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+                  <SelectValue />
+                </div>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">No Sound</SelectItem>
+                <SelectItem value="rain">🌧️ Rain</SelectItem>
+                <SelectItem value="forest">🌲 Forest</SelectItem>
+                <SelectItem value="ocean">🌊 Ocean</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select value={treeTheme} onValueChange={(v: any) => setTreeTheme(v)}>
+              <SelectTrigger className="w-[160px]">
+                <div className="flex items-center gap-2">
+                  <Palette className="h-4 w-4" />
+                  <SelectValue />
+                </div>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="default">🌳 Default</SelectItem>
+                <SelectItem value="autumn">🍂 Autumn</SelectItem>
+                <SelectItem value="spring">🌸 Spring</SelectItem>
+                <SelectItem value="winter">❄️ Winter</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
           {/* Motivational Quote */}
-          <MotivationalQuote />
+          {!isBreakMode && <MotivationalQuote />}
 
           {/* Time Selection */}
           <div className="space-y-4">
-            <h2 className="text-lg font-medium text-foreground text-center">Select Focus Duration</h2>
+            <h2 className="text-lg font-medium text-foreground text-center">
+              {isBreakMode ? "☕ Break Time" : "Select Focus Duration"}
+            </h2>
             <div className="flex gap-3 justify-center flex-wrap">
               {TIME_OPTIONS.map((time) => (
                 <Button
@@ -152,9 +217,13 @@ export const Timer = ({ onSessionComplete }: TimerProps) => {
             )}
           </div>
 
-          {/* Tree Animation */}
+          {/* Tree Animation or Break Icon */}
           <div className="flex justify-center py-8">
-            <TreeGrowth progress={progress} />
+            {!isBreakMode ? (
+              <TreeGrowth progress={progress} theme={treeTheme} />
+            ) : (
+              <div className="text-8xl animate-float">☕</div>
+            )}
           </div>
 
           {/* Timer Display */}
@@ -171,7 +240,7 @@ export const Timer = ({ onSessionComplete }: TimerProps) => {
           </div>
 
           {/* Controls */}
-          <div className="flex gap-4 justify-center">
+          <div className="flex gap-4 justify-center flex-wrap">
             {!isRunning ? (
               <Button
                 onClick={handleStart}
@@ -202,6 +271,26 @@ export const Timer = ({ onSessionComplete }: TimerProps) => {
               Reset
             </Button>
           </div>
+
+          {/* Break Timer Quick Actions */}
+          {!isRunning && !isBreakMode && (
+            <div className="pt-4 border-t border-border">
+              <p className="text-sm text-muted-foreground text-center mb-3">Quick Break</p>
+              <div className="flex gap-3 justify-center">
+                {BREAK_OPTIONS.map((time) => (
+                  <Button
+                    key={time}
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleStartBreak(time)}
+                  >
+                    <Coffee className="mr-1 h-4 w-4" />
+                    {time} min
+                  </Button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </Card>
     </div>

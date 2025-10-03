@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
-import { Clock, Calendar, Trash2 } from "lucide-react";
+import { Clock, Calendar, Trash2, Download } from "lucide-react";
 import { toast } from "sonner";
 
 interface Session {
@@ -20,6 +20,29 @@ export const SessionHistory = ({ sessions, onDeleteSession }: SessionHistoryProp
     onDeleteSession(id);
     toast.success(`Deleted ${duration} minute session`);
   };
+
+  const handleExport = () => {
+    const csvContent = [
+      ['Date', 'Duration (minutes)', 'Completed At'],
+      ...sessions.map(s => [
+        new Date(s.completedAt).toLocaleDateString(),
+        s.duration,
+        new Date(s.completedAt).toLocaleString()
+      ])
+    ].map(row => row.join(',')).join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `focus-tree-history-${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+    toast.success('History exported successfully!');
+  };
+
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat("en-US", {
       month: "short",
@@ -35,10 +58,18 @@ export const SessionHistory = ({ sessions, onDeleteSession }: SessionHistoryProp
   return (
     <div className="w-full max-w-2xl mx-auto space-y-4">
       <Card className="p-6 bg-card shadow-[var(--shadow-soft)] border-border">
-        <h2 className="text-2xl font-bold text-foreground mb-4 flex items-center gap-2">
-          <Calendar className="h-6 w-6 text-primary" />
-          Session History
-        </h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
+            <Calendar className="h-6 w-6 text-primary" />
+            Session History
+          </h2>
+          {sessions.length > 0 && (
+            <Button variant="outline" size="sm" onClick={handleExport}>
+              <Download className="h-4 w-4 mr-2" />
+              Export
+            </Button>
+          )}
+        </div>
 
         {/* Stats */}
         <div className="grid grid-cols-2 gap-4 mb-6">
