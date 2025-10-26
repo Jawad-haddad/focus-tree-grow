@@ -1,22 +1,21 @@
-# Welcome to your Lovable project
+# Focus Tree
 
-## Project info
+A beautiful focus timer application that helps you stay productive by growing a virtual tree with each focus session.
 
-**URL**: https://lovable.dev/projects/ba3a4726-0ee7-4f9d-9974-bb03907a2aea
+## Features
 
-## How can I edit this code?
+- 🌱 Pomodoro timer with customizable durations
+- 🌳 Growing tree visualization that evolves with your progress
+- 🏆 Achievements system to track milestones
+- 📊 Statistics and session history
+- 🎯 Daily goals tracker
+- 🎨 Multiple tree themes (Default, Autumn, Spring, Winter)
+- 🔊 Ambient sounds (Rain, Forest, Ocean)
+- 🌓 Light/Dark mode support
 
-There are several ways of editing your application.
-
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/ba3a4726-0ee7-4f9d-9974-bb03907a2aea) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
+## How to run this project locally
 
 **Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
 
 The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
@@ -62,12 +61,12 @@ This project is built with:
 
 ## How can I deploy this project?
 
-Simply open [Lovable](https://lovable.dev/projects/ba3a4726-0ee7-4f9d-9974-bb03907a2aea) and click on Share -> Publish.
+This project can be deployed to various platforms:
 
-## Can I connect a custom domain to my Lovable project?
+- **Vercel**: Connect your GitHub repo and deploy
+- **Netlify**: Import from GitHub and deploy
+- **GitHub Pages**: Use GitHub Actions for deployment
 
-Yes, you can!
+## License
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+MIT
