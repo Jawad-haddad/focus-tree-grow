@@ -7,9 +7,11 @@ import { DailyGoals } from "@/components/DailyGoals";
 import { ParticleEffect } from "@/components/ParticleEffect";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Sprout } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Sprout, Presentation } from "lucide-react";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { useAchievements } from "@/hooks/useAchievements";
+import { Link } from "react-router-dom";
 
 interface Session {
   id: string;
@@ -63,7 +65,13 @@ const Index = () => {
       <div className="max-w-6xl mx-auto space-y-8">
         {/* Header */}
         <header className="text-center space-y-3 animate-grow relative">
-          <div className="absolute top-0 right-0">
+          <div className="absolute top-0 right-0 flex items-center gap-2">
+            <Link to="/presentation">
+              <Button variant="outline" size="sm" className="gap-2">
+                <Presentation className="h-4 w-4" />
+                View Presentation
+              </Button>
+            </Link>
             <ThemeToggle />
           </div>
           <div className="flex items-center justify-center gap-3">
