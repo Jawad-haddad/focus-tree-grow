@@ -8,7 +8,7 @@ import { ParticleEffect } from "@/components/ParticleEffect";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Sprout, Presentation } from "lucide-react";
+import { Sprout, Presentation, Youtube } from "lucide-react";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { useAchievements } from "@/hooks/useAchievements";
 import { Link } from "react-router-dom";
@@ -65,6 +65,14 @@ const Index = () => {
       <div className="max-w-6xl mx-auto space-y-8">
         {/* Header */}
         <header className="text-center space-y-3 animate-grow relative">
+          <div className="absolute top-0 left-0">
+            <a href="https://www.youtube.com/watch?v=BlmBDrnhd2I&list=PLpfxVARjkP-9KiAauTLjIZOvub9E1FERs" target="_blank" rel="noopener noreferrer">
+              <Button variant="outline" size="sm" className="gap-2">
+                <Youtube className="h-4 w-4" />
+                Learn Scratch
+              </Button>
+            </a>
+          </div>
           <div className="absolute top-0 right-0 flex items-center gap-2">
             <Link to="/presentation">
               <Button variant="outline" size="sm" className="gap-2">
