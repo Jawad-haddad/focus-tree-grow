@@ -64,36 +64,36 @@ const Index = () => {
       
       <div className="max-w-6xl mx-auto space-y-8">
         {/* Header */}
-        <header className="text-center space-y-4 animate-grow">
-          {/* Navigation buttons - responsive layout */}
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-2 sm:gap-0 mb-4">
+        <header className="space-y-6 animate-grow">
+          {/* Navigation buttons - stacked on mobile, row on desktop */}
+          <div className="flex flex-wrap justify-center items-center gap-2 px-2">
             <a href="https://www.youtube.com/watch?v=BlmBDrnhd2I&list=PLpfxVARjkP-9KiAauTLjIZOvub9E1FERs" target="_blank" rel="noopener noreferrer">
-              <Button variant="outline" size="sm" className="gap-2 w-full sm:w-auto">
+              <Button variant="outline" size="sm" className="gap-2">
                 <Youtube className="h-4 w-4" />
                 Learn Scratch
               </Button>
             </a>
-            <div className="flex items-center gap-2">
-              <Link to="/presentation">
-                <Button variant="outline" size="sm" className="gap-2">
-                  <Presentation className="h-4 w-4" />
-                  View Presentation
-                </Button>
-              </Link>
-              <ThemeToggle />
-            </div>
+            <Link to="/presentation">
+              <Button variant="outline" size="sm" className="gap-2">
+                <Presentation className="h-4 w-4" />
+                View Presentation
+              </Button>
+            </Link>
+            <ThemeToggle />
           </div>
           
           {/* Title */}
-          <div className="flex items-center justify-center gap-3">
-            <Sprout className="h-8 w-8 sm:h-10 sm:w-10 text-primary animate-float" />
-            <h1 className="text-3xl sm:text-5xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              Focus Tree
-            </h1>
+          <div className="text-center space-y-3">
+            <div className="flex items-center justify-center gap-3">
+              <Sprout className="h-8 w-8 sm:h-10 sm:w-10 text-primary animate-float" />
+              <h1 className="text-3xl sm:text-5xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                Focus Tree
+              </h1>
+            </div>
+            <p className="text-base sm:text-lg text-muted-foreground max-w-md mx-auto px-4">
+              Stay focused and watch your tree grow with each session
+            </p>
           </div>
-          <p className="text-base sm:text-lg text-muted-foreground max-w-md mx-auto px-4">
-            Stay focused and watch your tree grow with each session
-          </p>
         </header>
 
         {/* Daily Goals */}
