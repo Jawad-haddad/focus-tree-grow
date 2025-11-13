@@ -1,0 +1,38 @@
+{
+  "name": "focus-tree-grow-main",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jawad-haddad/focus-tree-grow.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Jawad-haddad/focus-tree-grow/issues"
+  },
+  "homepage": "https://github.com/Jawad-haddad/focus-tree-grow#readme",
+  "devDependencies": {
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "dependencies": {
+    "esbuild": "^0.25.12",
+    "fdir": "^6.5.0",
+    "nanoid": "^3.3.11",
+    "picocolors": "^1.1.1",
+    "picomatch": "^4.0.3",
+    "postcss": "^8.5.6",
+    "rollup": "^4.53.2",
+    "scheduler": "^0.27.0",
+    "source-map-js": "^1.2.1",
+    "tinyglobby": "^0.2.15",
+    "vite": "^7.2.2"
+  }
+}
